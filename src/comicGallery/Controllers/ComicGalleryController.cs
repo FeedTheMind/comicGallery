@@ -1,4 +1,5 @@
-﻿using comicGallery.Models;
+﻿using comicGallery.Data;
+using comicGallery.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +10,22 @@ namespace comicGallery.Controllers
 {
     public class ComicGalleryController : Controller
     {
-        public ActionResult Detail() // "action" method
+        private ComicBookRepository _comicBookRepository = null;
+
+        public ComicGalleryController()
         {
-            // This approach, below, is object initializer syntax
-            var comicBook = new ComicBook()
+            _comicBookRepository = new ComicBookRepository();
+        }
+
+        public ActionResult Detail(int? id) // "action" method
+        {
+            if (id == null)
             {
-                SeriesTitle = "The Amazing Spider-Man",
-                IssueNumber = 700,
-                DescriptionHtml = "<p>Final issue! Witness the final hours of Doctor Octopus' life and his greatest act of revenge! Even if Spider-Man survives . . . <strong>will Peter Parker?</strong></p>",
-                Artists = new Artist[]
-                {
-                    new Models.Artist() {Name = "Dan Slott", Role = "Script" },
-                    new Models.Artist() {Name = "Humberto Ramos", Role = "Pencils" },
-                    new Models.Artist() {Name = "Victor Olazaba", Role = "Inks" },
-                    new Models.Artist() {Name = "Edgar Delgado", Role = "Colors" },
-                    new Models.Artist() {Name = "Chris Eliopoulos", Role = "Letters" },
-                }
-            };
+                return HttpNotFound();
+            }
+
+            // This approach, below, is object initializer syntax
+            var comicBook = _comicBookRepository.GetComicBook((int)id);
 
             return View(comicBook);
         }
